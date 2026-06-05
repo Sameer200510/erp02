@@ -4,8 +4,8 @@ packages:
 allowBuilds:
   '@nestjs/core': set this to true or false
   '@prisma/engines': set this to true or false
-  bcrypt: set this to true or false
-  msw: set this to true or false
+  bcrypt: true
+  msw: true
   prisma: set this to true or false
   sharp: set this to true or false
   unrs-resolver: set this to true or false
