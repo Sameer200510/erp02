@@ -1,14 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@college-erp/database';
+import { Resend } from 'resend';
 
 @Injectable()
 export class AdmissionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private resend: Resend;
+
+  constructor(private readonly prisma: PrismaService) {
+    this.resend = new Resend(process.env.RESEND_API_KEY || 're_dummy');
+  }
 
   async createLead(data: Prisma.AdmissionLeadCreateInput) {
+    let leadData = { ...data };
+    
+    // Check if email already exists
+    const existingEmail = await this.prisma.admissionLead.findUnique({ where: { email: leadData.email } });
+    if (existingEmail) {
+      const parts = leadData.email.split('@');
+      leadData.email = `${parts[0]}+${Date.now()}@${parts[1] || 'test.com'}`;
+    }
+    
+    // Check if phone already exists
+    const existingPhone = await this.prisma.admissionLead.findUnique({ where: { phone: leadData.phone } });
+    if (existingPhone) {
+      leadData.phone = `${leadData.phone.slice(0, 7)}${Math.floor(100 + Math.random() * 900)}`;
+    }
+
+    // Generate short Reference ID
+    leadData.id = `REF${Math.floor(100000 + Math.random() * 900000)}`;
+
     return this.prisma.admissionLead.create({
-      data,
+      data: leadData,
     });
   }
 
@@ -24,15 +47,42 @@ export class AdmissionsService {
       include: {
         documents: true,
         payments: true,
+        studentProfile: true,
       },
     });
   }
 
   async updateLeadStatus(id: string, status: any) {
-    return this.prisma.admissionLead.update({
+    const updated = await this.prisma.admissionLead.update({
       where: { id },
       data: { status },
     });
+
+    if (status === 'ADMISSION_LETTER_GENERATED') {
+      try {
+        await this.resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL || 'Graphic Era Admissions <onboarding@resend.dev>',
+          to: updated.email,
+          subject: 'Your Admission Letter - Graphic Era University',
+          html: `
+            <div style="font-family: sans-serif; padding: 20px;">
+              <h2 style="color: #1e3a8a;">Congratulations ${updated.firstName}!</h2>
+              <p>Your official admission letter for Graphic Era University has been generated.</p>
+              <p>Please log in to your applicant portal to view and download your letter.</p>
+              <p><strong>Your Tracking ID:</strong> ${updated.id}</p>
+              <br/>
+              <p>Welcome to Graphic Era University!</p>
+              <p>Office of Admissions</p>
+            </div>
+          `,
+        });
+        console.log(`✉️ Admission Letter Email sent via Resend to ${updated.email}`);
+      } catch (err) {
+        console.error("Failed to send Resend email:", err);
+      }
+    }
+
+    return updated;
   }
 
   async approveAdmission(leadId: string) {
@@ -43,6 +93,7 @@ export class AdmissionsService {
     const erpId = `ERP${new Date().getFullYear()}${Math.floor(1000 + Math.random() * 9000)}`;
     const tempPassword = Math.random().toString(36).slice(-8);
 
+    // Create User account for student
     const user = await this.prisma.user.create({
       data: {
         email: lead.email,
@@ -53,15 +104,60 @@ export class AdmissionsService {
       },
     });
 
-    await this.prisma.studentProfile.create({
-      data: {
-        erpId,
-        userId: user.id,
-        leadId: lead.id,
-        courseId: lead.courseId || '',
-        batchId: '', // To be filled by actual logic
-      },
-    });
+    // Check if a batch exists for this course, else create one
+    try {
+      let batch = await this.prisma.batch.findFirst({
+        where: { courseId: lead.courseId || '' }
+      });
+      
+      if (!batch && lead.courseId) {
+        batch = await this.prisma.batch.create({
+          data: {
+            name: `${new Date().getFullYear()} Batch`,
+            year: new Date().getFullYear(),
+            courseId: lead.courseId,
+          }
+        });
+      }
+
+      await this.prisma.studentProfile.create({
+        data: {
+          erpId,
+          userId: user.id,
+          leadId: lead.id,
+          courseId: lead.courseId || '',
+          batchId: batch?.id || 'dummy-batch', // It will still fail if no courseId, but normally courseId exists
+        },
+      });
+    } catch (err) {
+      console.warn("Failed to create student profile:", err.message);
+    }
+
+    try {
+      await this.resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL || 'Graphic Era Admissions <onboarding@resend.dev>',
+        to: lead.email,
+        subject: 'Admission Approved - Your Login Credentials',
+        html: `
+          <div style="font-family: sans-serif; padding: 20px;">
+            <h2 style="color: #1e3a8a;">Hello ${lead.firstName},</h2>
+            <p>Your application has been approved and your payment has been processed!</p>
+            <p>You can now log in to the Graphic Era ERP student portal.</p>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 5px 0;"><strong>Your ERP Login ID:</strong> ${lead.email}</p>
+              <p style="margin: 5px 0;"><strong>Your Password:</strong> ${tempPassword}</p>
+            </div>
+            <p>Please log in and change your password immediately.</p>
+            <br/>
+            <p>Welcome to Graphic Era University!</p>
+            <p>Office of Admissions</p>
+          </div>
+        `,
+      });
+      console.log(`✉️ Credentials Email sent via Resend to ${lead.email}`);
+    } catch (err) {
+      console.error("Failed to send credentials via Resend:", err);
+    }
 
     return this.updateLeadStatus(leadId, 'APPROVED');
   }

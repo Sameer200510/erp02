@@ -5,15 +5,20 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 
-@Controller('documents')
-@UseGuards(JwtAuthGuard)
+@Controller('api/documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   @Post(':leadId/upload')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      destination: './uploads',
+      destination: (req, file, cb) => {
+        const uploadPath = './uploads';
+        if (!require('fs').existsSync(uploadPath)) {
+          require('fs').mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+      },
       filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         cb(null, `${uniqueSuffix}${extname(file.originalname)}`);

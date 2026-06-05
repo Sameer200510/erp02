@@ -7,29 +7,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, CheckCircle, Clock, XCircle, FileText, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function StatusPage() {
   const [trackingId, setTrackingId] = useState("");
   const [status, setStatus] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!trackingId.trim()) return;
 
     setIsLoading(true);
-    // Mock API lookup
-    setTimeout(() => {
-      // Simulate finding an application
+    try {
+      const res = await fetch(`http://localhost:3001/api/admissions/${trackingId}`);
+      if (!res.ok) throw new Error("Application not found");
+      const data = await res.json();
+      
       setStatus({
-        id: trackingId,
-        name: "Rahul Sharma",
-        course: "B.Tech CSE",
-        currentStatus: "DOCUMENT_VERIFIED", // PENDING, DOCUMENT_VERIFIED, PAYMENT_PENDING, ADMITTED
-        dateApplied: "05-06-2026",
+        id: data.id,
+        name: `${data.firstName} ${data.lastName}`,
+        course: data.courseId || "Pending",
+        currentStatus: data.status, 
+        dateApplied: new Date(data.createdAt).toLocaleDateString(),
       });
+    } catch (err) {
+      toast.error("Application not found. Please check your Reference ID.");
+      setStatus(null);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const getStatusIcon = (currentStatus: string) => {
@@ -43,8 +50,8 @@ export default function StatusPage() {
   const getStatusMessage = (currentStatus: string) => {
     switch (currentStatus) {
       case 'PENDING': return "Your application is currently under review by our admissions team.";
-      case 'DOCUMENT_VERIFIED': return "Your documents have been verified! Please proceed to pay the admission fee.";
-      case 'ADMITTED': return "Congratulations! Your admission is confirmed. Check your email for login credentials.";
+      case 'PAYMENT_PENDING': return "Your documents have been verified! Please visit the Fee Cell with your reference page to pay the admission fee.";
+      case 'APPROVED': return "Congratulations! Your admission is confirmed. Check your email for login credentials.";
       case 'REJECTED': return "Unfortunately, we could not proceed with your application at this time.";
       default: return "Processing...";
     }
@@ -57,17 +64,18 @@ export default function StatusPage() {
       </div>
 
       <div className="z-10 w-full max-w-xl">
-        <div className="mb-8 text-center">
+        <div className="mb-8 flex justify-center items-center gap-2">
+          <img src="/logo.png" alt="Graphic Era Logo" className="h-10 w-10 object-contain" />
           <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            Antigravity University
+            Graphic Era University
           </Link>
         </div>
 
-        <Card className="bg-white/5 border-white/10 backdrop-blur-xl shadow-2xl">
+        <Card className="bg-card border-border backdrop-blur-xl shadow-2xl">
           <CardHeader className="text-center pb-8">
-            <CardTitle className="text-2xl text-white">Track Your Application</CardTitle>
-            <CardDescription className="text-gray-400">
-              Enter your tracking ID to see the real-time status of your admission.
+            <CardTitle className="text-2xl text-foreground">Track Your Application</CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Enter your Reference ID to see the real-time status of your admission.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -75,10 +83,10 @@ export default function StatusPage() {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input 
-                  placeholder="Enter Tracking ID (e.g. APP123456)" 
+                  placeholder="Enter Reference ID (e.g. REF123456)" 
                   value={trackingId}
                   onChange={(e) => setTrackingId(e.target.value)}
-                  className="pl-10 bg-white/5 border-white/10 text-white focus-visible:ring-primary h-12"
+                  className="pl-10 bg-card border-border text-foreground focus-visible:ring-primary h-12"
                   required
                 />
               </div>
@@ -91,14 +99,14 @@ export default function StatusPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="pt-6 border-t border-white/10"
+                className="pt-6 border-t border-border"
               >
                 <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="p-4 bg-white/5 rounded-full border border-white/10">
+                  <div className="p-4 bg-card rounded-full border border-border">
                     {getStatusIcon(status.currentStatus)}
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-1">
+                    <h3 className="text-xl font-bold text-foreground mb-1">
                       {status.currentStatus.replace('_', ' ')}
                     </h3>
                     <p className="text-muted-foreground">
@@ -108,23 +116,30 @@ export default function StatusPage() {
                 </div>
 
                 <div className="mt-8 grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
-                    <p className="text-xs text-gray-500 mb-1">Applicant Name</p>
-                    <p className="text-sm font-medium text-white">{status.name}</p>
+                  <div className="p-4 bg-card border border-border rounded-lg">
+                    <p className="text-xs text-muted-foreground mb-1">Applicant Name</p>
+                    <p className="text-sm font-medium text-foreground">{status.name}</p>
                   </div>
-                  <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
-                    <p className="text-xs text-gray-500 mb-1">Course Applied</p>
-                    <p className="text-sm font-medium text-white">{status.course}</p>
+                  <div className="p-4 bg-card border border-border rounded-lg">
+                    <p className="text-xs text-muted-foreground mb-1">Course Applied</p>
+                    <p className="text-sm font-medium text-foreground">{status.course}</p>
                   </div>
                 </div>
 
-                {status.currentStatus === 'DOCUMENT_VERIFIED' && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6">
-                    <Button className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-900/20">
-                      Proceed to Pay Admission Fee <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </motion.div>
-                )}
+                <div className="mt-6 flex flex-col gap-3">
+                  {status.currentStatus === 'PAYMENT_PENDING' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm text-center">
+                      Please visit the Fee Cell on campus with this reference page to complete your admission payment.
+                    </motion.div>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    onClick={() => window.print()} 
+                    className="w-full h-12 bg-card border-border text-foreground hover:bg-muted"
+                  >
+                    <FileText className="mr-2 h-4 w-4" /> Print Reference Page
+                  </Button>
+                </div>
               </motion.div>
             )}
           </CardContent>

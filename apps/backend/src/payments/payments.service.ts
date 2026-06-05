@@ -1,9 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { PaymentStatus, PaymentMode, LeadStatus } from '@college-erp/database';
+import { AdmissionsService } from '../admissions/admissions.service';
 
 @Injectable()
 export class PaymentsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private admissionsService: AdmissionsService
+  ) {}
 
   async processPayment(leadId: string, amount: number, reference: string) {
     const lead = await this.prisma.admissionLead.findUnique({ where: { id: leadId } });
@@ -13,16 +18,14 @@ export class PaymentsService {
       data: {
         leadId,
         amount,
-        reference,
-        status: 'COMPLETED',
+        transactionId: reference,
+        mode: PaymentMode.UPI,
+        status: PaymentStatus.SUCCESS,
       },
     });
 
-    // Automatically update the lead status to PAYMENT_VERIFIED
-    await this.prisma.admissionLead.update({
-      where: { id: leadId },
-      data: { status: 'PAYMENT_VERIFIED' },
-    });
+    // Trigger the actual admission logic which generates ID and emails
+    await this.admissionsService.approveAdmission(leadId);
 
     return payment;
   }

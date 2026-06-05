@@ -38,55 +38,55 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+        <Card className="bg-card border-border backdrop-blur-lg hover:bg-muted transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Applications</CardTitle>
             <Users className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white">{stats.total}</div>
+            <div className="text-3xl font-bold text-foreground">{stats.total}</div>
             <p className="text-xs text-muted-foreground mt-1">+20% from last month</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+        <Card className="bg-card border-border backdrop-blur-lg hover:bg-muted transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Pending Documents</CardTitle>
             <FileText className="h-4 w-4 text-orange-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white">{stats.pendingDocs}</div>
+            <div className="text-3xl font-bold text-foreground">{stats.pendingDocs}</div>
             <p className="text-xs text-muted-foreground mt-1">Requires admin review</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+        <Card className="bg-card border-border backdrop-blur-lg hover:bg-muted transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Pending Payments</CardTitle>
             <CreditCard className="h-4 w-4 text-blue-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white">{stats.pendingPayments}</div>
+            <div className="text-3xl font-bold text-foreground">{stats.pendingPayments}</div>
             <p className="text-xs text-muted-foreground mt-1">Awaiting fee submission</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+        <Card className="bg-card border-border backdrop-blur-lg hover:bg-muted transition-all duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Fully Verified</CardTitle>
             <CheckCircle className="h-4 w-4 text-emerald-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white">{stats.verified}</div>
+            <div className="text-3xl font-bold text-foreground">{stats.verified}</div>
             <p className="text-xs text-muted-foreground mt-1">Students admitted</p>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 bg-white/5 border-white/10 backdrop-blur-lg">
+        <Card className="col-span-4 bg-card border-border backdrop-blur-lg">
           <CardHeader>
-            <CardTitle className="text-white">Admission Trends</CardTitle>
+            <CardTitle className="text-foreground">Admission Trends</CardTitle>
           </CardHeader>
           <CardContent className="pl-2">
             <div className="h-[300px]">
@@ -106,9 +106,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-3 bg-white/5 border-white/10 backdrop-blur-lg">
+        <Card className="col-span-3 bg-card border-border backdrop-blur-lg">
           <CardHeader>
-            <CardTitle className="text-white">Recent Activity</CardTitle>
+            <CardTitle className="text-foreground">Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-8">
@@ -118,7 +118,7 @@ export default function DashboardPage() {
                     <Users className="h-4 w-4 text-primary" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium leading-none text-white">New Application Received</p>
+                    <p className="text-sm font-medium leading-none text-foreground">New Application Received</p>
                     <p className="text-sm text-muted-foreground">Rahul Sharma applied for B.Tech CSE</p>
                   </div>
                   <div className="ml-auto font-medium text-xs text-muted-foreground">

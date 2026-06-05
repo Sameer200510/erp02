@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { DocumentType, DocStatus } from '@college-erp/database';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,9 +17,9 @@ export class DocumentsService {
     return this.prisma.document.create({
       data: {
         leadId,
-        type,
+        type: type as DocumentType,
         fileUrl,
-        status: 'PENDING',
+        status: DocStatus.PENDING,
       },
     });
   }

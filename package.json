@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "College ERP Admission Module",
   "private": true,
+  "packageManager": "pnpm@11.5.1",
   "scripts": {
+    "dev": "turbo run dev",
     "dev:frontend": "pnpm --filter frontend dev",
     "dev:backend": "pnpm --filter backend start:dev",
     "build:frontend": "pnpm --filter frontend build",

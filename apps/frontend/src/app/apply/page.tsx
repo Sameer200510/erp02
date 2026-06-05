@@ -41,21 +41,22 @@ export default function ApplyPage() {
       </div>
 
       <div className="z-10 w-full max-w-2xl">
-        <div className="mb-8 text-center">
-          <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            Antigravity University
+        <div className="mb-8 flex justify-center items-center gap-2">
+          <img src="/logo.png" alt="Graphic Era Logo" className="h-12 w-12 object-contain" />
+          <Link href="/" className="text-2xl font-bold text-primary">
+            Graphic Era University
           </Link>
         </div>
 
-        <Card className="bg-white/5 border-white/10 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="text-center border-b border-white/5 pb-6">
+        <Card className="bg-card border-border backdrop-blur-xl shadow-2xl">
+          <CardHeader className="text-center border-b border-border pb-6 bg-primary rounded-t-xl text-primary-foreground pt-8">
             <div className="flex items-center justify-center space-x-4 mb-4">
               {[1, 2, 3].map((s) => (
                 <div key={s} className="flex items-center">
-                  <div className={`h-8 w-8 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${step >= s ? 'bg-primary text-primary-foreground' : 'bg-white/10 text-muted-foreground'}`}>
+                  <div className={`h-8 w-8 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${step >= s ? 'bg-secondary text-secondary-foreground' : 'bg-primary-foreground/20 text-white'}`}>
                     {s}
                   </div>
-                  {s < 3 && <div className={`w-12 h-1 mx-2 rounded-full transition-colors ${step > s ? 'bg-primary' : 'bg-white/10'}`} />}
+                  {s < 3 && <div className={`w-12 h-1 mx-2 rounded-full transition-colors ${step > s ? 'bg-secondary' : 'bg-primary-foreground/20'}`} />}
                 </div>
               ))}
             </div>
@@ -65,7 +66,7 @@ export default function ApplyPage() {
               {step === 3 && "Document Upload"}
               {step === 4 && "Application Submitted!"}
             </CardTitle>
-            <CardDescription className="text-gray-400">
+            <CardDescription className="text-white/80">
               {step === 1 && "Tell us about yourself."}
               {step === 2 && "What are you applying for?"}
               {step === 3 && "Upload your verification documents."}
@@ -79,13 +80,13 @@ export default function ApplyPage() {
                 <div className="h-20 w-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <CheckCircle className="h-10 w-10 text-emerald-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">Thank You!</h3>
                 <p className="text-muted-foreground mb-6">Your application has been received successfully.</p>
-                <div className="p-4 bg-white/5 border border-white/10 rounded-lg inline-block">
-                  <p className="text-sm text-gray-400 mb-1">Your Tracking ID</p>
+                <div className="p-4 bg-card border border-border rounded-lg inline-block">
+                  <p className="text-sm text-muted-foreground mb-1">Your Tracking ID</p>
                   <p className="text-2xl font-mono font-bold text-primary tracking-widest">{trackingId}</p>
                 </div>
-                <p className="text-sm text-gray-500 mt-6">
+                <p className="text-sm text-muted-foreground mt-6">
                   You can use this ID to track your application status.
                 </p>
                 <div className="mt-8">
@@ -100,21 +101,21 @@ export default function ApplyPage() {
                   <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300">First Name</label>
-                        <Input required className="bg-white/5 border-white/10 text-white focus-visible:ring-primary" />
+                        <label className="text-sm font-medium text-muted-foreground">First Name</label>
+                        <Input required className="bg-card border-border text-foreground focus-visible:ring-primary" />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300">Last Name</label>
-                        <Input required className="bg-white/5 border-white/10 text-white focus-visible:ring-primary" />
+                        <label className="text-sm font-medium text-muted-foreground">Last Name</label>
+                        <Input required className="bg-card border-border text-foreground focus-visible:ring-primary" />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-300">Email Address</label>
-                      <Input type="email" required className="bg-white/5 border-white/10 text-white focus-visible:ring-primary" />
+                      <label className="text-sm font-medium text-muted-foreground">Email Address</label>
+                      <Input type="email" required className="bg-card border-border text-foreground focus-visible:ring-primary" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-300">Phone Number</label>
-                      <Input type="tel" required className="bg-white/5 border-white/10 text-white focus-visible:ring-primary" />
+                      <label className="text-sm font-medium text-muted-foreground">Phone Number</label>
+                      <Input type="tel" required className="bg-card border-border text-foreground focus-visible:ring-primary" />
                     </div>
                   </motion.div>
                 )}
@@ -122,8 +123,8 @@ export default function ApplyPage() {
                 {step === 2 && (
                   <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-300">Select Course</label>
-                      <select required className="flex h-10 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                      <label className="text-sm font-medium text-muted-foreground">Select Course</label>
+                      <select required className="flex h-10 w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                         <option value="" className="text-black">Select a course...</option>
                         <option value="btech" className="text-black">B.Tech Computer Science</option>
                         <option value="bba" className="text-black">Bachelor of Business Admin</option>
@@ -131,33 +132,33 @@ export default function ApplyPage() {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-300">Previous School/College</label>
-                      <Input required className="bg-white/5 border-white/10 text-white focus-visible:ring-primary" />
+                      <label className="text-sm font-medium text-muted-foreground">Previous School/College</label>
+                      <Input required className="bg-card border-border text-foreground focus-visible:ring-primary" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-300">Percentage / CGPA</label>
-                      <Input type="number" required className="bg-white/5 border-white/10 text-white focus-visible:ring-primary" />
+                      <label className="text-sm font-medium text-muted-foreground">Percentage / CGPA</label>
+                      <Input type="number" required className="bg-card border-border text-foreground focus-visible:ring-primary" />
                     </div>
                   </motion.div>
                 )}
 
                 {step === 3 && (
                   <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="space-y-6">
-                    <div className="p-6 border border-dashed border-white/20 rounded-xl bg-white/5 flex flex-col items-center justify-center text-center hover:bg-white/10 transition-colors cursor-pointer group">
+                    <div className="p-6 border border-dashed border-border rounded-xl bg-card flex flex-col items-center justify-center text-center hover:bg-muted transition-colors cursor-pointer group">
                       <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <UploadCloud className="h-6 w-6 text-primary" />
                       </div>
-                      <h4 className="text-white font-medium mb-1">Upload Aadhaar Card</h4>
+                      <h4 className="text-foreground font-medium mb-1">Upload Aadhaar Card</h4>
                       <p className="text-xs text-muted-foreground">PDF, JPG or PNG (Max 5MB)</p>
                       <Input type="file" required className="hidden" id="aadhaar" />
                       <label htmlFor="aadhaar" className="mt-4 text-xs font-semibold text-primary cursor-pointer hover:underline">Browse File</label>
                     </div>
 
-                    <div className="p-6 border border-dashed border-white/20 rounded-xl bg-white/5 flex flex-col items-center justify-center text-center hover:bg-white/10 transition-colors cursor-pointer group">
+                    <div className="p-6 border border-dashed border-border rounded-xl bg-card flex flex-col items-center justify-center text-center hover:bg-muted transition-colors cursor-pointer group">
                       <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <UploadCloud className="h-6 w-6 text-primary" />
                       </div>
-                      <h4 className="text-white font-medium mb-1">Upload Previous Marksheet</h4>
+                      <h4 className="text-foreground font-medium mb-1">Upload Previous Marksheet</h4>
                       <p className="text-xs text-muted-foreground">PDF, JPG or PNG (Max 5MB)</p>
                       <Input type="file" required className="hidden" id="marksheet" />
                       <label htmlFor="marksheet" className="mt-4 text-xs font-semibold text-primary cursor-pointer hover:underline">Browse File</label>
@@ -165,17 +166,17 @@ export default function ApplyPage() {
                   </motion.div>
                 )}
 
-                <div className="flex justify-between pt-6 border-t border-white/5">
+                <div className="flex justify-between pt-6 border-t border-border">
                   <Button
                     type="button"
                     variant="ghost"
-                    onClick={prevStep}
-                    disabled={step === 1 || isSubmitting}
-                    className="text-gray-400 hover:text-white"
+                    onClick={step === 1 ? () => window.location.href = '/' : prevStep}
+                    disabled={isSubmitting}
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     <ChevronLeft className="h-4 w-4 mr-2" /> Back
                   </Button>
-                  <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90 text-primary-foreground min-w-[120px]">
+                  <Button type="submit" disabled={isSubmitting} className="bg-secondary hover:bg-secondary/90 text-secondary-foreground min-w-[120px] shadow-lg">
                     {isSubmitting ? "Processing..." : step === 3 ? "Submit Application" : "Continue"}
                     {!isSubmitting && step < 3 && <ChevronRight className="h-4 w-4 ml-2" />}
                   </Button>

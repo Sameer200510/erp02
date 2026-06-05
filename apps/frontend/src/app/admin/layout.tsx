@@ -7,11 +7,7 @@ import { motion } from "framer-motion";
 import { LayoutDashboard, Users, FileText, CreditCard, LogOut, Settings } from "lucide-react";
 
 const navItems = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Applications", href: "/admin/applications", icon: Users },
-  { name: "Documents", href: "/admin/documents", icon: FileText },
-  { name: "Payments", href: "/admin/payments", icon: CreditCard },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -29,11 +25,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <motion.aside 
         initial={{ x: -250 }}
         animate={{ x: 0 }}
-        className="hidden w-64 flex-col border-r border-white/10 bg-black/40 backdrop-blur-xl md:flex"
+        className="hidden w-64 flex-col border-r border-border bg-card border-r border-border backdrop-blur-xl md:flex"
       >
-        <div className="flex h-16 items-center px-6 border-b border-white/10">
+        <div className="flex h-16 items-center px-6 border-b border-border gap-2">
+          <img src="/logo.png" alt="Graphic Era Logo" className="h-8 w-8 object-contain" />
           <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            ERP Admin
+            Graphic Era
           </span>
         </div>
         <nav className="flex-1 space-y-2 px-4 py-6">
@@ -45,7 +42,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 ${
                     isActive
                       ? "bg-primary/20 text-primary font-medium"
-                      : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                      : "text-muted-foreground hover:bg-card hover:text-foreground"
                   }`}
                 >
                   <item.icon className="h-5 w-5" />
@@ -61,7 +58,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="border-t border-white/10 p-4">
+        <div className="border-t border-border p-4">
           <button
             onClick={handleLogout}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition-all hover:bg-red-500/10 hover:text-red-500"
@@ -75,9 +72,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Topbar */}
-        <header className="flex h-16 items-center justify-between border-b border-white/10 bg-black/20 backdrop-blur-md px-6">
+        <header className="flex h-16 items-center justify-between border-b border-border bg-black/20 backdrop-blur-md px-6">
           <div className="flex items-center gap-4">
-            <h1 className="text-lg font-semibold text-white">
+            <h1 className="text-lg font-semibold text-foreground">
               {navItems.find((n) => pathname.startsWith(n.href))?.name || "Dashboard"}
             </h1>
           </div>

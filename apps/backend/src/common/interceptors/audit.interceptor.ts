@@ -23,8 +23,10 @@ export class AuditInterceptor implements NestInterceptor {
             await this.prisma.auditLog.create({
               data: {
                 action,
+                entity: url.split('/')[1] || 'global',
+                entityId: 'generic',
                 userId,
-                details: JSON.stringify({ body: req.body, query: req.query }),
+                newValue: { body: req.body, query: req.query },
               },
             });
           } catch (e) {

@@ -20,7 +20,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
+      const res = await fetch("http://localhost:3001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -33,7 +33,7 @@ export default function LoginPage() {
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
       toast.success("Login successful! Welcome back.");
-      router.push("/admin/dashboard");
+      router.push("/admin/applications");
     } catch (error: any) {
       toast.error(error.message || "Failed to login");
     } finally {
@@ -56,12 +56,13 @@ export default function LoginPage() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="z-10 w-full max-w-md p-4"
       >
-        <Card className="border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="space-y-1 text-center">
+        <Card className="border-border bg-card backdrop-blur-xl shadow-2xl">
+          <CardHeader className="space-y-1 text-center flex flex-col items-center bg-primary rounded-t-xl py-8">
+            <img src="/logo.png" alt="Graphic Era Logo" className="h-16 w-16 object-contain mb-2 bg-white rounded-full p-1 shadow-md" />
             <CardTitle className="text-3xl font-bold tracking-tight text-white">
-              Antigravity ERP
+              Graphic Era ERP
             </CardTitle>
-            <CardDescription className="text-gray-400">
+            <CardDescription className="text-white/80">
               Enter your credentials to access the system
             </CardDescription>
           </CardHeader>
@@ -69,26 +70,26 @@ export default function LoginPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="email"
                     placeholder="Email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus-visible:ring-primary"
+                    className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
                     required
                   />
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus-visible:ring-primary"
+                    className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
                     required
                   />
                 </div>
