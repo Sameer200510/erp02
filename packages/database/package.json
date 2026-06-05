@@ -1,0 +1,13 @@
+{
+  "name": "@college-erp/database",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@prisma/client": "latest",
+    "pg": "^8.21.0"
+  },
+  "devDependencies": {
+    "prisma": "latest",
+    "typescript": "latest"
+  }
+}

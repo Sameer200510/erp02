@@ -1,0 +1,26 @@
+{
+  "name": "college-erp",
+  "version": "1.0.0",
+  "description": "College ERP Admission Module",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend start:dev",
+    "build:frontend": "pnpm --filter frontend build",
+    "build:backend": "pnpm --filter backend build"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "msw",
+      "bcrypt",
+      "@nestjs/core",
+      "@prisma/engines",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
+  "devDependencies": {
+    "turbo": "^2.9.16"
+  }
+}
