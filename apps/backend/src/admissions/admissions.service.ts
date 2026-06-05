@@ -1,14 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@college-erp/database';
-import { Resend } from 'resend';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class AdmissionsService {
-  private resend: Resend;
+  private transporter: nodemailer.Transporter;
 
   constructor(private readonly prisma: PrismaService) {
-    this.resend = new Resend(process.env.RESEND_API_KEY || 're_dummy');
+    this.transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
+    });
   }
 
   async createLead(data: Prisma.AdmissionLeadCreateInput) {
@@ -60,8 +66,8 @@ export class AdmissionsService {
 
     if (status === 'ADMISSION_LETTER_GENERATED') {
       try {
-        await this.resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL || 'Graphic Era Admissions <onboarding@resend.dev>',
+        await this.transporter.sendMail({
+          from: process.env.GMAIL_USER ? `Admissions <${process.env.GMAIL_USER}>` : 'Admissions',
           to: updated.email,
           subject: 'Your Admission Letter - Graphic Era University',
           html: `
@@ -76,9 +82,9 @@ export class AdmissionsService {
             </div>
           `,
         });
-        console.log(`✉️ Admission Letter Email sent via Resend to ${updated.email}`);
+        console.log(`✉️ Admission Letter Email sent via Gmail to ${updated.email}`);
       } catch (err) {
-        console.error("Failed to send Resend email:", err);
+        console.error("Failed to send Gmail email:", err);
       }
     }
 
@@ -134,8 +140,8 @@ export class AdmissionsService {
     }
 
     try {
-      await this.resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'Graphic Era Admissions <onboarding@resend.dev>',
+      await this.transporter.sendMail({
+        from: process.env.GMAIL_USER ? `Admissions <${process.env.GMAIL_USER}>` : 'Admissions',
         to: lead.email,
         subject: 'Admission Approved - Your Login Credentials',
         html: `
@@ -154,9 +160,9 @@ export class AdmissionsService {
           </div>
         `,
       });
-      console.log(`✉️ Credentials Email sent via Resend to ${lead.email}`);
+      console.log(`✉️ Credentials Email sent via Gmail to ${lead.email}`);
     } catch (err) {
-      console.error("Failed to send credentials via Resend:", err);
+      console.error("Failed to send credentials via Gmail:", err);
     }
 
     return this.updateLeadStatus(leadId, 'APPROVED');
