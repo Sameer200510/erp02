@@ -1,75 +1,134 @@
-import React from 'react';
+"use client";
+
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line } from "recharts";
+import { Users, FileText, CheckCircle, CreditCard } from "lucide-react";
+
+const trendData = [
+  { name: "Jan", applications: 40, verified: 24 },
+  { name: "Feb", applications: 60, verified: 35 },
+  { name: "Mar", applications: 85, verified: 50 },
+  { name: "Apr", applications: 120, verified: 80 },
+  { name: "May", applications: 150, verified: 110 },
+  { name: "Jun", applications: 190, verified: 150 },
+];
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    total: 0,
+    pendingDocs: 0,
+    pendingPayments: 0,
+    verified: 0,
+  });
+
+  useEffect(() => {
+    // In a real app, fetch from API: /admissions
+    // Mocking for now to demonstrate layout
+    setTimeout(() => {
+      setStats({
+        total: 190,
+        pendingDocs: 45,
+        pendingPayments: 20,
+        verified: 125,
+      });
+    }, 500);
+  }, []);
+
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-      
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-100 border-t-4 border-t-blue-500">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Applications</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">1,204</p>
-          <p className="mt-2 text-sm text-green-600 flex items-center">
-            <span>↑ 12% from last month</span>
-          </p>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-100 border-t-4 border-t-green-500">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Approved Admissions</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">842</p>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-100 border-t-4 border-t-yellow-500">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Pending Verifications</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">146</p>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-100 border-t-4 border-t-red-500">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Rejected</h3>
-          <p className="mt-2 text-3xl font-semibold text-gray-900">216</p>
-        </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Applications</CardTitle>
+            <Users className="h-4 w-4 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-white">{stats.total}</div>
+            <p className="text-xs text-muted-foreground mt-1">+20% from last month</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Documents</CardTitle>
+            <FileText className="h-4 w-4 text-orange-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-white">{stats.pendingDocs}</div>
+            <p className="text-xs text-muted-foreground mt-1">Requires admin review</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Pending Payments</CardTitle>
+            <CreditCard className="h-4 w-4 text-blue-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-white">{stats.pendingPayments}</div>
+            <p className="text-xs text-muted-foreground mt-1">Awaiting fee submission</p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/5 border-white/10 backdrop-blur-lg hover:bg-white/10 transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Fully Verified</CardTitle>
+            <CheckCircle className="h-4 w-4 text-emerald-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-white">{stats.verified}</div>
+            <p className="text-xs text-muted-foreground mt-1">Students admitted</p>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Recent Activity Table Mock */}
-      <div className="bg-white shadow rounded-lg mt-8">
-        <div className="px-6 py-5 border-b border-gray-200">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Recent Applications</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applicant</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Course</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Jane Doe</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">B.Tech CS</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                    Verification Pending
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2026-06-05</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">John Smith</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">MBA</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    Approved
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2026-06-04</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4 bg-white/5 border-white/10 backdrop-blur-lg">
+          <CardHeader>
+            <CardTitle className="text-white">Admission Trends</CardTitle>
+          </CardHeader>
+          <CardContent className="pl-2">
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff1a" vertical={false} />
+                  <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                  />
+                  <Line type="monotone" dataKey="applications" stroke="var(--primary)" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="verified" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-3 bg-white/5 border-white/10 backdrop-blur-lg">
+          <CardHeader>
+            <CardTitle className="text-white">Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-8">
+              {[1, 2, 3, 4, 5].map((_, i) => (
+                <div key={i} className="flex items-center">
+                  <div className="h-9 w-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30 mr-4">
+                    <Users className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none text-white">New Application Received</p>
+                    <p className="text-sm text-muted-foreground">Rahul Sharma applied for B.Tech CSE</p>
+                  </div>
+                  <div className="ml-auto font-medium text-xs text-muted-foreground">
+                    {i * 15}m ago
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
